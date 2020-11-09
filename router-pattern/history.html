@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="javascript:;" data-to="/detail">跳转到详情</a>
+    <a href="javascript:;" data-to="/home">跳转到home</a>
+    <a href="javascript:;" data-to="/list">跳转到商品页</a>
+    <div id="box"></div>
+</body>
+<script>
+    class Router{
+        constructor({routes}){
+            this.routes=routes
+            this.box=document.querySelector("#box")
+            this.init()
+        }
+        init(){
+            let as=document.querySelectorAll("a");//获取所有的a标签
+            [].forEach.call(as,(item)=>{
+                item.addEventListener("click",()=>{ //点击
+                    let path=item.getAttribute("data-to")//截取
+                    window.history.pushState({},null,path)//通过history里pushState进行路由的视图更新
+                    this.updateView(path)
+                })
+            })
+        }
+        updateView(path){
+            let content=this.routes.filter(item=>item.path===path)
+            console.log(content);
+            
+            this.box.innerHTML=content[0].component
+        }
+    }
+    new Router({
+        routes:[
+            {
+                path:"/detail",
+                component:"详情"
+            },
+            {
+                path:"/home",
+                component:"首页"
+            },
+            {
+                path:"/list",
+                component:"商品"
+            }
+        ]
+    })
+</script>
+</html>

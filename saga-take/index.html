@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 原生实现take方法
+
+
+
+        function allFun() {
+            let taker = null;
+            function connect(cbk) {
+                taker = cbk;
+            }
+            function dispatch(action) {
+                let three = taker;
+                taker = null;
+                three(action)
+            }
+            return {
+                dispatch,
+                connect
+            }
+        }
+
+        let funs = allFun()
+
+        function take() {
+            return {
+                type: 'TAKE'
+            }
+        }
+
+
+        function* watchSaga() {
+            let res = yield take();
+            // 打印出来的结果为 ===> {type: 'DATA'}
+            console.log('res', res)
+        }
+
+
+        // 做到action的共享存储并且传递
+        function runEffect(next) {
+            funs.connect((action) => {
+                next(action)
+            })
+        }
+
+        function run(saga) {
+            let res = saga();
+            function next(params) {
+                let result = res.next(params);
+                if (!result.done) {
+                    if (result.value.type === 'TAKE') {
+                        runEffect(next)
+                    }
+                }
+            }
+            next()
+        }
+
+        run(watchSaga)
+
+
+        setTimeout(() => {
+            funs.dispatch({
+                type: 'DATA',
+                data: 2
+            })
+        }, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    let obj={
+        name:"zls"
+    }
+    function fun(num,num2){
+        console.log(num,"----",num2,"----")
+    }
+    function mycall(context){
+        //判断调用者是否是函数
+        if(typeof this !== 'function'){
+            throw new Errpr('调用者不是一个函数')
+        }
+        //如传递目标对象就取该对象，没有传递就取window
+        context=context || window;
+        //讲该函数赋值给目标对象，使其对象作为该函数的调用者
+        context.fun=this;
+        //取除目标对象外所有的参数,并传递下去
+        console.log(arguments);
+        
+        let args=[...arguments].slice(1)
+        let res=context.fun(...args)
+        //删除临时属性
+        delete context.fun;
+        return res
+    }
+    Function.prototype.mycall=mycall
+    fun.mycall(obj,2,3)
+</script>
+</html>

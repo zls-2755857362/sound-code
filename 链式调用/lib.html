@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+   function Proson(name){
+       console.log(Proson.prototype);
+       if(!Proson.prototype.isPrototypeOf(this)){
+            return new Proson(name)
+       }
+       this.events=[]
+       this.init(name)
+       setTimeout(()=>{
+           this.runtack()
+       },0)
+   }
+   Proson.prototype.runtack= async function (){
+       for(let item of this.events){
+           await item()
+       }
+        return this
+    }
+    Proson.prototype.init=function (params){
+        function tack(){
+            console.log(`this is ${params}`)
+        }
+        this.events.push(tack)
+        return this
+    }
+    Proson.prototype.sleep=function (params){
+        function tack(){
+           
+            return new Promise(resolve=>{
+                 console.log("3000ms")
+                 setTimeout(()=>{
+                    resolve()
+                 },params)
+            })
+           
+        }
+        this.events.push(tack)
+        return this
+    }
+    Proson.prototype.eat=function (params){
+        function tack(){
+            console.log(`吃${params}`)
+        }
+        this.events.push(tack)
+        return this
+    }
+    Proson.prototype.sleepFirst=function (params){
+        function tack(){
+            return new Promise(resolve=>{
+                 console.log("2000ms")
+                 setTimeout(()=>{
+                    resolve()
+                 },params)
+            })
+        }
+        this.events.unshift(tack)
+        return this
+    }
+    Proson("mode").eat("苹果").sleep(3000).eat("香蕉").sleepFirst(2000)
+    
+</script>
+</html>
